@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  createdAt    DateTime      @default(now())
+  tasks        Task[]        @relation("AssigneeTasks")
+  comments     Comment[]
+  activityLogs ActivityLog[]
+}
+
+model Task {
+  id           String        @id @default(cuid())
+  title        String
+  description  String?
+  status       String        @default("BACKLOG")
+  priority     String        @default("MEDIUM")
+  category     String?
+  dueDate      DateTime?
+  archived     Boolean       @default(false)
+  assigneeId   String?
+  assignee     User?         @relation("AssigneeTasks", fields: [assigneeId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  comments     Comment[]
+  activityLogs ActivityLog[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  taskId    String
+  authorId  String
+  message   String
+  createdAt DateTime @default(now())
+  task      Task     @relation(fields: [taskId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  taskId    String
+  userId    String
+  action    String
+  field     String?
+  oldValue  String?
+  newValue  String?
+  createdAt DateTime @default(now())
+  task      Task     @relation(fields: [taskId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
