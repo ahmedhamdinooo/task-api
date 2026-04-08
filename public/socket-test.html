@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.io Live Test</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    button { margin: 5px; padding: 10px 15px; }
+    #logs { margin-top: 20px; border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; background: #f9f9f9; }
+    .log { margin-bottom: 5px; }
+  </style>
+</head>
+<body>
+
+  <h2>Socket.io Live Test</h2>
+  
+  <div id="logs"></div>
+
+  <script>
+    // غير localhost:3000 للـ URL بتاع السيرفر لو على Railway
+    const socket = io("https://task-api-production-b878.up.railway.app/api/v1"); 
+
+    const logs = document.getElementById("logs");
+
+    function addLog(message) {
+      const div = document.createElement("div");
+      div.className = "log";
+      div.textContent = message;
+      logs.appendChild(div);
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    socket.on("connect", () => {
+      addLog(`✅ Connected: ${socket.id}`);
+    });
+
+    socket.on("disconnect", () => {
+      addLog("❌ Disconnected");
+    });
+
+    // أي client جديد هيشوف أي comment جديد أو task updated
+    socket.on("comment.created", (comment) => {
+      addLog(`💬 Comment: ${JSON.stringify(comment)}`);
+    });
+
+    socket.on("task.updated", (task) => {
+      addLog(`📝 Task: ${JSON.stringify(task)}`);
+    });
+  </script>
+
+</body>
+</html>
