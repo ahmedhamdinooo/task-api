@@ -16,6 +16,7 @@ import userRoutes from "./modules/users/user.routes";
 
 const app = express();
 const httpServer = http.createServer(app);
+app.set("trust proxy", 1); 
 app.use(express.static("public"));
 // Init WebSocket
 initSocket(httpServer);
