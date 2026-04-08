@@ -20,7 +20,9 @@
 
   <script>
     // غير localhost:3000 للـ URL بتاع السيرفر لو على Railway
-    const socket = io("https://task-api-production-b878.up.railway.app/api/v1"); 
+    const socket = io("https://task-api-production-b878.up.railway.app", {
+      transports: ["websocket"],
+    }); 
 
     const logs = document.getElementById("logs");
 
