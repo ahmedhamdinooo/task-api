@@ -9,3 +9,4 @@ export const env = {
   rateLimitMax: parseInt(process.env.RATE_LIMIT_MAX || "100"),
   isDev: process.env.NODE_ENV !== "production",
 };
+

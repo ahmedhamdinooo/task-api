@@ -17,6 +17,8 @@ import userRoutes from "./modules/users/user.routes";
 const app = express();
 const httpServer = http.createServer(app);
 app.set("trust proxy", 1); 
+app.use(rateLimiter); // Rate limiting on ALL routes
+
 app.use(express.static("public"));
 // Init WebSocket
 initSocket(httpServer);
@@ -28,7 +30,6 @@ redis.connect().catch(() => {});
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use(rateLimiter); // Rate limiting on ALL routes
 
 // Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
