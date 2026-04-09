@@ -4,7 +4,7 @@ import { sendSuccess } from "../../utils/response";
 import { TaskFilterQuery } from "../../types";
 
 // Hardcode a fallback userId since there's no auth
-const SYSTEM_USER_ID = "system";
+const SYSTEM_USER_ID = "cmnribxcb0001cf9uslu059py";
 
 export const taskController = {
   async listTasks(req: Request, res: Response, next: NextFunction) {
