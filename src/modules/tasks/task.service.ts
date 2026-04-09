@@ -49,13 +49,18 @@ return result;
     return task;
   },
 
-  async createTask(data: Parameters<typeof taskRepository.create>[0], userId: string) {
+async createTask(data: Parameters<typeof taskRepository.create>[0], userId: string) {
+  try {
     const task = await taskRepository.create(data);
     await activityRepository.logCreated(task.id, userId);
     await cacheService.invalidatePattern(`${TASKS_CACHE_PREFIX}*`);
     emitTaskUpdated(task);
     return task;
-  },
+  } catch (err) {
+    console.error("❌ Error creating task:", err); // اطبع الخطأ في السيرفر
+    throw err; // خلي الخطأ يرجع علشان middleware يقدر يديه للـ response
+  }
+},
 
   async updateTask(
     id: string,

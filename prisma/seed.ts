@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { Status, Priority } from "../src/types";
+
 const prisma = new PrismaClient();
+
+// حدد SYSTEM_USER_ID ثابت من users اللي هنعملها
+let SYSTEM_USER_ID: string;
 
 async function main() {
   // Clear existing data
@@ -17,6 +21,9 @@ async function main() {
     prisma.user.create({ data: { name: "Nour Mohamed", email: "nour@example.com" } }),
   ]);
 
+  // خلي SYSTEM_USER_ID يكون أول واحد (Ahmed Hamdy)
+  SYSTEM_USER_ID = users[0].id;
+
   const statuses: Status[] = ["BACKLOG", "IN_PROGRESS", "BLOCKED", "DONE"];
   const priorities: Priority[] = ["LOW", "MEDIUM", "HIGH", "URGENT"];
   const categories = ["Frontend", "Backend", "DevOps", "Design", "QA"];
@@ -32,7 +39,7 @@ async function main() {
         priority: priorities[i % 4],
         category: categories[i % 5],
         dueDate: new Date(Date.now() + i * 86400000),
-        assigneeId: users[i % users.length].id,
+        assigneeId: users[i % users.length].id, // تاكد دايمًا موجود في users
         archived: i > 28,
       },
     });
@@ -57,7 +64,7 @@ async function main() {
     await prisma.activityLog.create({
       data: {
         taskId: tasks[i % tasks.length].id,
-        userId: users[i % users.length].id,
+        userId: SYSTEM_USER_ID, // استخدم SYSTEM_USER_ID ثابت عشان logs تعمل صح
         action: "UPDATED",
         field,
         oldValue: field === "status" ? statuses[(i + 1) % 4] : priorities[(i + 1) % 4],
